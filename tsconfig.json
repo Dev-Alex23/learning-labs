@@ -23,10 +23,11 @@
     "baseUrl": "./",
     "paths": {
       "@components/*": ["src/components/*"],
-      "@util/*": ["src/utils/*"]
-    }
+      "@utils/*": ["src/utils/*"],
+      "@pages/*": ["src/pages/*"],
+    },
   },
   "include": ["src"],
   "exclude": ["node_modules", "build"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
 }
