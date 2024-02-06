@@ -1,13 +1,32 @@
+import { Response } from 'src/types/Service';
 import { LoginCredentials, User } from 'src/types/Users';
 
 class AuthService {
   constructor() {}
+
+  async checkUserAuthentication(): Promise<User | undefined> {
+    try {
+      const response = await fetch('http://localhost:6001/api/auth/check', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      console.log({ response });
+      if (!response.ok) throw new Error('Not authenticated');
+      const data: { user: User } = await response.json();
+      return data.user;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  }
 
   async login(credentials: LoginCredentials): Promise<User | undefined> {
     try {
       const response = await fetch('http://localhost:6001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'Application/json' },
+        credentials: 'include',
         body: JSON.stringify(credentials),
       });
 
@@ -25,13 +44,27 @@ class AuthService {
 
   async logout(): Promise<void> {
     try {
-      const response = await fetch('/api/auth/logout', { method: 'POST' });
+      const response = await fetch('http://localhost:6001/api/auth/logout', { method: 'POST', credentials: 'include' });
 
       if (!response.ok) {
         throw new Error('Logout failed');
       }
     } catch (error) {
       throw new Error('Logout failed');
+    }
+  }
+
+  async refreshToken(): Promise<Response | undefined> {
+    try {
+      const response = await fetch('http://localhost:6001/api/auth/refresh_token', {
+        headers: { 'Content-Type': 'Application/json' },
+        credentials: 'include',
+      });
+      const data = await response.json();
+      console.log({ data });
+      return data;
+    } catch (error) {
+      console.log(error);
     }
   }
 }

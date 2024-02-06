@@ -3,5 +3,5 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 export const ProtectedRoute = () => {
   const { user } = useAuth();
-  return user ? <Outlet /> : <Navigate to='/' replace />;
+  return user?.isAuthenticated ? <Outlet /> : <Navigate to='/' replace />;
 };

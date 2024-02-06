@@ -1,13 +1,16 @@
 import AuthService from '@service/AuthService';
 import { ReactNode, useState } from 'react';
-import { AuthContext } from './AuthContext';
 import { User } from 'src/types/Users';
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log({ user });
+
   const login = async (email: string, password: string) => {
+    setIsLoading(true);
     try {
       const userData = await AuthService.login({ email, password });
       if (userData) {
@@ -16,6 +19,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(false);
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -30,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const value = { user, login, logout, isLoading };
+  const value = { user, setUser, login, logout, isLoading, setIsLoading };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

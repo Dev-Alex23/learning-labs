@@ -5,8 +5,9 @@ import { Login } from '@pages/Login';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
-import { ProtectedRoute } from './routes/ProtectedRoute';
 import { AuthProvider } from '@context/AuthProvider';
+import { PersistLogin } from '@components/Common/PersistLogin';
+import { ProtectedRoute } from '@routes/ProtectedRoute';
 
 function App() {
   const router = createBrowserRouter([
@@ -14,10 +15,13 @@ function App() {
       path: '/',
       element: <Root />,
       errorElement: <ErrorPage />,
-      children: [
-        { path: '/', element: <Login />, index: true },
-        { path: 'chat', element: <ProtectedRoute />, children: [{ index: true, element: <Chat /> }] },
-      ],
+      children: [{ path: '/', element: <Login />, index: true }],
+    },
+    {
+      path: '/chat',
+      element: <PersistLogin />,
+      errorElement: <ErrorPage />,
+      children: [{ element: <ProtectedRoute />, children: [{ index: true, element: <Chat /> }] }],
     },
   ]);
   return (
