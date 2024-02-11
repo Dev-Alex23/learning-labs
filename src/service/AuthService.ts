@@ -1,7 +1,6 @@
-import { Response } from 'src/types/Service';
-import { LoginCredentials, User } from 'src/types/Users';
+import { AuthServiceModel, LoginCredentials, RefreshResponse, User } from './Model';
 
-class AuthService {
+class AuthService implements AuthServiceModel {
   constructor() {}
 
   async checkUserAuthentication(): Promise<User | undefined> {
@@ -50,11 +49,13 @@ class AuthService {
         throw new Error('Logout failed');
       }
     } catch (error) {
-      throw new Error('Logout failed');
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
     }
   }
 
-  async refreshToken(): Promise<Response | undefined> {
+  async refreshToken(): Promise<RefreshResponse | undefined> {
     try {
       const response = await fetch('http://localhost:6001/api/auth/refresh_token', {
         headers: { 'Content-Type': 'Application/json' },
@@ -64,7 +65,7 @@ class AuthService {
       console.log({ data });
       return data;
     } catch (error) {
-      console.log(error);
+      throw new Error('Logout failed');
     }
   }
 }
