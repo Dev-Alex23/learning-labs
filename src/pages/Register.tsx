@@ -1,7 +1,10 @@
 import { Button, Input } from '@material-tailwind/react';
 import { ShowToast } from '@utils/ShowToast';
+import { useNavigate } from 'react-router-dom';
 
-export const Register = () => {
+const Register = () => {
+  const navigate = useNavigate();
+
   return (
     <div className='flex'>
       <div className='h-[100vh] w-[50vw] bg-black'></div>
@@ -18,7 +21,7 @@ export const Register = () => {
           <Button placeholder={'Register'} onClick={() => ShowToast('You are registered')}>
             Register
           </Button>
-          <Button placeholder={'Already have an account?'} onClick={() => ShowToast('Go to login')}>
+          <Button placeholder={'Already have an account?'} onClick={() => navigate('/')}>
             Already have an account?
           </Button>
         </div>
@@ -26,3 +29,5 @@ export const Register = () => {
     </div>
   );
 };
+
+export default Register;

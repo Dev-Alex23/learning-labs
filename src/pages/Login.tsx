@@ -4,10 +4,11 @@ import { ShowToast } from '@utils/ShowToast';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const Login = () => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [_errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setErrors] = useState<{ email?: string; password?: string }>({});
   const { login } = useAuth();
 
   const navigate = useNavigate();
@@ -38,7 +39,9 @@ export const Login = () => {
 
   return (
     <div className='flex'>
-      <div className='h-[100vh] w-[50vw] bg-black'></div>
+      <div className='h-[100vh] w-[50vw] flex items-center '>
+        <div className='w-[99%] h-[98%] rounded-lg m-auto bg-black'></div>
+      </div>
       <div className='h-[100vh - 10rem]  w-[50vw] flex flex-col justify-center m-10'>
         <div className='mb-10'>
           <h1 className='text-5xl text-center'>Welcome Back</h1>
@@ -67,7 +70,7 @@ export const Login = () => {
             <Button placeholder={'Login'} type='submit'>
               Login
             </Button>
-            <Button placeholder={'Register'} onClick={() => ShowToast('Go to register')}>
+            <Button placeholder={'Register'} onClick={() => navigate('/register')}>
               Register
             </Button>
           </div>
@@ -76,3 +79,5 @@ export const Login = () => {
     </div>
   );
 };
+
+export default Login;

@@ -1,10 +1,10 @@
 import { useAuth } from '@hooks/useAuth';
 import { useRefreshToken } from '@hooks/useRefreshToken';
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
 
-export const PersistLogin = () => {
-  const { user, isLoading } = useAuth();
+export const RequireAuth = ({ children }: { children: JSX.Element }) => {
+  const { user } = useAuth();
+
   const verifyRefreshToken = useRefreshToken();
 
   useEffect(() => {
@@ -12,5 +12,6 @@ export const PersistLogin = () => {
       verifyRefreshToken();
     }
   }, [user?.accessToken, verifyRefreshToken]);
-  return <>{isLoading ? <h1>Loading....</h1> : <Outlet />}</>;
+
+  return children;
 };

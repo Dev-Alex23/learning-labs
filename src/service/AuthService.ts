@@ -1,4 +1,4 @@
-import { AuthServiceModel, LoginCredentials, RefreshResponse, User } from './Model';
+import { AuthServiceModel, LoginCredentials, RefreshResponse, User } from './AuthService.model';
 
 class AuthService implements AuthServiceModel {
   constructor() {}
@@ -69,5 +69,5 @@ class AuthService implements AuthServiceModel {
     }
   }
 }
-// Uses the singleton approach, so all instances of AuthService share the same state
+// Uses the singleton approach, so all use of AuthService share the same state
 export default new AuthService();
