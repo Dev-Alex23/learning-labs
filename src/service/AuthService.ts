@@ -1,73 +1,82 @@
-import { AuthServiceModel, LoginCredentials, RefreshResponse, User } from './AuthService.model';
+import { LoginCredentials, RefreshResponse, User } from './AuthService.model';
 
-class AuthService implements AuthServiceModel {
-  constructor() {}
+/**
+ * A wrapper function to make a request.
+ *
+ * @param path The path to fetch.
+ * @param options Optional customization options for the request. Allows omitting or overriding defaults.
+ * @returns A promise resolving to the response data.
+ */
+export const fetchWrapper = async <T>(path: string, options: RequestInit): Promise<T | undefined> => {
+  try {
+    const response = await fetch(`http://localhost:6001/api/auth/${path}`, {
+      ...options,
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Request failed');
+    }
 
-  async checkUserAuthentication(): Promise<User | undefined> {
-    try {
-      const response = await fetch('http://localhost:6001/api/auth/check', {
-        method: 'GET',
-        credentials: 'include',
-      });
-      console.log({ response });
-      if (!response.ok) throw new Error('Not authenticated');
-      const data: { user: User } = await response.json();
-      return data.user;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
+    return response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
     }
   }
+};
 
-  async login(credentials: LoginCredentials): Promise<User | undefined> {
-    try {
-      const response = await fetch('http://localhost:6001/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'Application/json' },
-        credentials: 'include',
-        body: JSON.stringify(credentials),
-      });
-
-      if (!response.ok) {
-        throw new Error('login failed');
-      }
-      const data: { user: User } = await response.json();
-      return data.user;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
+/**
+ * Logs in a user with the provided credentials.
+ * @param credentials The login credentials.
+ * @returns A promise that resolves with the User or undefined if login fails.
+ */
+export const authLogin = async (credentials: LoginCredentials): Promise<User | undefined> => {
+  try {
+    const options: RequestInit = {
+      method: 'POST',
+      headers: { 'Content-Type': 'Application/json' },
+      credentials: 'include',
+      body: JSON.stringify(credentials),
+    };
+    const userResponse = await fetchWrapper<User>('login', options);
+    return userResponse;
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
     }
   }
+};
 
-  async logout(): Promise<void> {
-    try {
-      const response = await fetch('http://localhost:6001/api/auth/logout', { method: 'POST', credentials: 'include' });
-
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
+/**
+ * Logs out the current user.
+ * @returns void
+ */
+export const authLogout = async (): Promise<void> => {
+  try {
+    await fetchWrapper<Response>('logout', { method: 'POST', credentials: 'include' });
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
     }
   }
+};
 
-  async refreshToken(): Promise<RefreshResponse | undefined> {
-    try {
-      const response = await fetch('http://localhost:6001/api/auth/refresh_token', {
-        headers: { 'Content-Type': 'Application/json' },
-        credentials: 'include',
-      });
-      const data = await response.json();
-      console.log({ data });
-      return data;
-    } catch (error) {
-      throw new Error('Logout failed');
+/**
+ * Refreshes the `accessToken`
+ * @returns A promise that resolves and returns a new `accessToken` if the `refreshToken` is still valid
+ */
+export const authRefreshToken = async (): Promise<RefreshResponse | undefined> => {
+  try {
+    const options: RequestInit = {
+      headers: { 'Content-Type': 'Application/json' },
+      credentials: 'include',
+    };
+    const response = await fetchWrapper<RefreshResponse>('refresh_token', options);
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
     }
   }
-}
-// Uses the singleton approach, so all use of AuthService share the same state
-export default new AuthService();
+};

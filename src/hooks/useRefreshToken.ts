@@ -1,19 +1,17 @@
-import AuthService from '@service/AuthService';
 import { ShowToast } from '@utils/ShowToast';
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Response } from 'src/types/Service';
 import { useAuth } from './useAuth';
+import { authRefreshToken } from '@service/AuthService';
 
 export const useRefreshToken = () => {
-  const { setUser, setIsLoading } = useAuth();
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const verifyRefreshToken = useCallback(async () => {
     try {
-      setIsLoading(true);
-      const response: Response | undefined = await AuthService.refreshToken();
+      const response = await authRefreshToken();
       if (response?.isAuthenticated) {
         setUser(response);
       } else {
@@ -24,10 +22,8 @@ export const useRefreshToken = () => {
         ShowToast(error.message, 'error');
       }
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
-  }, [location, navigate, setIsLoading, setUser]);
+  }, [location, navigate, setUser]);
 
   return verifyRefreshToken;
 };

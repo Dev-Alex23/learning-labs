@@ -1,6 +1,7 @@
 import { useAuth } from '@hooks/useAuth';
 import { useRefreshToken } from '@hooks/useRefreshToken';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
+import { Loader } from './Loader';
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { user } = useAuth();
@@ -8,10 +9,10 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const verifyRefreshToken = useRefreshToken();
 
   useEffect(() => {
-    if (!user?.accessToken) {
+    if (!user?.isAuthenticated) {
       verifyRefreshToken();
     }
-  }, [user?.accessToken, verifyRefreshToken]);
+  }, [user?.isAuthenticated, verifyRefreshToken]);
 
-  return children;
+  return <Suspense fallback={<Loader />}>{children}</Suspense>;
 };
