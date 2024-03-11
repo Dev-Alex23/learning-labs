@@ -30,6 +30,8 @@
       "@hooks/*": ["src/hooks/*"],
       "@routes/*": ["src/routes/*"],
     },
+
+    "types": ["vitest/globals"],
   },
   "include": ["src"],
   "exclude": ["node_modules", "build"],
