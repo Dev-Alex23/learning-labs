@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 
 type ToastType = 'info' | 'warning' | 'success' | 'error' | 'default';
 
-export const ShowToast = (message: string, type: ToastType = 'default') => {
+export const showToast = (message: string, type: ToastType = 'default') => {
   switch (type) {
     case 'success':
       toast.success(message);

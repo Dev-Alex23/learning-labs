@@ -1,4 +1,4 @@
-import { ShowToast } from '@utils/ShowToast';
+import { showToast } from '@utils/ShowToast';
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
@@ -19,7 +19,7 @@ export const useRefreshToken = () => {
       }
     } catch (error) {
       if (error instanceof Error) {
-        ShowToast(error.message, 'error');
+        showToast(error.message, 'error');
       }
       console.error(error);
     }

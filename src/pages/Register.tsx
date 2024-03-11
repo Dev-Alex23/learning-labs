@@ -1,5 +1,5 @@
 import { Button, Input } from '@material-tailwind/react';
-import { ShowToast } from '@utils/ShowToast';
+import { showToast } from '@utils/ShowToast';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
@@ -18,7 +18,7 @@ const Register = () => {
             <Input crossOrigin={undefined} label='Email' type='email' />
             <Input crossOrigin={undefined} label='Password' type='password' />
           </div>
-          <Button placeholder={'Register'} onClick={() => ShowToast('You are registered')}>
+          <Button placeholder={'Register'} onClick={() => showToast('You are registered')}>
             Register
           </Button>
           <Button placeholder={'Already have an account?'} onClick={() => navigate('/')}>
