@@ -10,55 +10,42 @@ import { Route, Routes } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
-const Login = lazy(() => import('@pages/Login'));
-const Register = lazy(() => import('@pages/Register'));
 const Chat = lazy(() => import('@pages/Chat'));
 
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    errorElement: <ErrorFallback />,
+    children: [
+      {
+        path: '/',
+        element: <Login />,
+        index: true,
+      },
+      {
+        path: '/sign-in',
+        element: <Login />,
+      },
+      {
+        path: '/sign-up',
+        element: <Register />,
+      },
+      {
+        element: <DesktopLayout />,
+        errorElement: <ErrorFallback />,
+        children: [
+          {
+            element: <Chat />,
+            path: '/chat',
+          },
+        ],
+      },
+    ],
+  },
+]);
+
 function App() {
-  return (
-    <AuthProvider>
-      <Routes>
-        <Route element={<Root />}>
-          <Route
-            path='/'
-            element={
-              <SuspenseWrapper fallback={<Loader />}>
-                <Login />
-              </SuspenseWrapper>
-            }
-          />
-          <Route
-            path='/register'
-            element={
-              <SuspenseWrapper fallback={<Loader />}>
-                <Register />
-              </SuspenseWrapper>
-            }
-          />
-          <Route
-            path='/chat'
-            element={
-              <ErrorBoundary FallbackComponent={ErrorFallback}>
-                <SuspenseWrapper fallback={<Loader />}>
-                  {/* <RequireAuth> */}
-                  <Chat />
-                  {/* </RequireAuth> */}
-                </SuspenseWrapper>
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path='*'
-            element={
-              <SuspenseWrapper fallback={<Loader />}>
-                <ErrorPage />
-              </SuspenseWrapper>
-            }
-          />
-        </Route>
-      </Routes>
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

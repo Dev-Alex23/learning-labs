@@ -20,6 +20,7 @@ export default defineConfig({
       '@service': '/src/service',
       '@hooks': '/src/hooks',
       '@routes': '/src/routes',
+      '@layout': '/src/layout',
     },
   },
 });
