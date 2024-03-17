@@ -1,15 +1,14 @@
-import { lazy } from 'react';
-import './App.css';
-import { Root } from '@components/Common/Root';
-import { RequireAuth } from '@components/Common/RequireAuth';
-import { ErrorPage } from '@components/Common/ErrorPage';
-import { AuthProvider } from '@context/AuthProvider';
-import { Route, Routes } from 'react-router-dom';
-import { SuspenseWrapper } from '@components/Common/SuspenseWrapper';
-import 'react-toastify/dist/ReactToastify.css';
-import { ErrorBoundary } from 'react-error-boundary';
-import { Loader } from '@components/Common/Loader';
 import { ErrorFallback } from '@components/Common/ErrorFallback';
+import { ErrorPage } from '@components/Common/ErrorPage';
+import { Loader } from '@components/Common/Loader';
+import { Root } from '@components/Common/Root';
+import { SuspenseWrapper } from '@components/Common/SuspenseWrapper';
+import { AuthProvider } from '@context/AuthProvider';
+import { lazy } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Route, Routes } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
 
 const Login = lazy(() => import('@pages/Login'));
 const Register = lazy(() => import('@pages/Register'));
@@ -41,9 +40,9 @@ function App() {
             element={
               <ErrorBoundary FallbackComponent={ErrorFallback}>
                 <SuspenseWrapper fallback={<Loader />}>
-                  <RequireAuth>
-                    <Chat />
-                  </RequireAuth>
+                  {/* <RequireAuth> */}
+                  <Chat />
+                  {/* </RequireAuth> */}
                 </SuspenseWrapper>
               </ErrorBoundary>
             }

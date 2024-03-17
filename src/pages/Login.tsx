@@ -34,16 +34,7 @@ const Login = () => {
   return (
     <div className='flex'>
       <div className='h-[100vh] w-[50vw] flex items-center '>
-        <div className='w-[99%] h-[98%] rounded-lg m-auto gradient-bg'>
-          <div className='gradient-container'>
-            <div className='g1'></div>
-            <div className='g2'></div>
-            <div className='g3'></div>
-            <div className='g4'></div>
-            <div className='g5'></div>
-            <div className='interactive'></div>
-          </div>
-        </div>
+        <div className='w-[99%] h-[98%] rounded-lg bg-black'></div>
       </div>
       <div className='h-[100vh - 10rem]  w-[50vw] flex flex-col justify-center m-10'>
         <div className='mb-10'>
