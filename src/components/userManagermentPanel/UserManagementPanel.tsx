@@ -3,7 +3,7 @@ import { UserSearch } from '@components/userSearch/UserSearch';
 
 export const UserManagementPanel = () => {
   return (
-    <section className='flex flex-col gap-5'>
+    <section className='grid grid-rows-[90px_1fr] gap-5'>
       <UserSearch />
       <UserList />
     </section>
