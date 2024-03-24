@@ -8,8 +8,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isSignedIn) {
-      navigate('/chat');
-      return;
+      return navigate('/chat', { replace: true });
     }
   }, [isSignedIn, navigate]);
 
