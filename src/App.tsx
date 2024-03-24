@@ -1,14 +1,12 @@
 import { ErrorFallback } from '@components/Common/ErrorFallback';
-import { ErrorPage } from '@components/Common/ErrorPage';
-import { Loader } from '@components/Common/Loader';
-import { Root } from '@components/Common/Root';
-import { SuspenseWrapper } from '@components/Common/SuspenseWrapper';
-import { AuthProvider } from '@context/AuthProvider';
 import { lazy } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { Route, Routes } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RootLayout } from '@layout/Root/Root';
+import Login from '@pages/Login';
+import Register from '@pages/Register';
+import { DesktopLayout } from '@layout/Desktop/Desktop';
 
 const Chat = lazy(() => import('@pages/Chat'));
 
