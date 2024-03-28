@@ -2,21 +2,16 @@ import { useClerk, useUser } from '@clerk/clerk-react';
 import { SignOutIcon } from '@components/Common/icons/SignOutIcon';
 import { UserProfileIcon } from '@components/Common/icons/UserProfileIcon';
 import { Avatar, Menu, MenuHandler, MenuItem, MenuList, Typography } from '@material-tailwind/react';
-import { FC } from 'react';
 
-interface UserMenuProps {
-  src?: string;
-}
-export const UserMenu: FC<UserMenuProps> = ({ src }) => {
-  const { signOut } = useClerk();
+export const UserMenu = () => {
+  const { signOut, openUserProfile } = useClerk();
   const { user } = useUser();
-  // const userImg = src ?? 'https://docs.material-tailwind.com/img/face-2.jpg';
-  const userImg = user?.imageUrl ?? src;
+  const userImg = user?.imageUrl ?? 'https://docs.material-tailwind.com/img/face-2.jpg';
   return (
     <Menu>
       <MenuHandler>{<Avatar size={'md'} src={userImg} alt='avatar' className='cursor-pointer' />}</MenuHandler>
       <MenuList>
-        <MenuItem className='flex items-center gap-2'>
+        <MenuItem className='flex items-center gap-2' onClick={openUserProfile}>
           <UserProfileIcon />
           <Typography variant='small' className='font-poppins font-medium'>
             My Profile
