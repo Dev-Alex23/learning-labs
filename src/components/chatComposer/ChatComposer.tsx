@@ -19,12 +19,6 @@ export const ChatComposer = () => {
           label='Enter a message'
           icon={<MessageIcon />}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (message.length !== 0 && e.key === 'Enter') {
-              sendMessage(selectedContact!, message);
-            }
-            setMessage('');
-          }}
         />
         <IconButton className='p-5'>
           <PaperClipIcon />

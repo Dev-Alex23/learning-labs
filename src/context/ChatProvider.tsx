@@ -50,42 +50,25 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUserId })
       console.log({ message });
 
       switch (message.type) {
-        // case MessageType.PRIVATE_MESSAGE: {
-        //   console.log('hit');
-
-        //   setContacts((prevContacts) =>
-        //     prevContacts.map((contact) => {
-        //       const isContact = prevContacts.some((contact) => contact.contactId === message.senderId);
-        //       console.log({ isContact });
-
-        //       if (!isContact) {
-        //         return [...prevContacts, { contactId: message.senderId, messages: [message] }];
-        //       }
-        //       return contact.contactId === message.senderId || contact.contactId === message.recipientId
-        //         ? { ...contact, messages: [...contact.messages, message] }
-        //         : contact;
-        //     })
-        //   );
-        //   break;
-        // }
-        case MessageType.PRIVATE_MESSAGE: {
+        case MessageType.PRIVATE_MESSAGE:
           setContacts((prevContacts) => {
             const isContact = prevContacts.some((contact) => contact.contactId === message.senderId);
 
+            // If the sender is not in the contacts, add them with the message
             if (!isContact) {
-              // Directly return a new array of ContactsProps, adding the new contact with the message
               return [...prevContacts, { contactId: message.senderId, messages: [message] }];
             }
 
-            // If the sender is already a contact, map through and update
-            return prevContacts.map((contact) =>
-              contact.contactId === message.senderId || contact.contactId === message.recipientId
-                ? { ...contact, messages: [...contact.messages, message] }
-                : contact
-            );
+            // Otherwise, update existing contact messages
+            return prevContacts.map((contact) => {
+              if (contact.contactId === message.senderId || contact.contactId === message.recipientId) {
+                return { ...contact, messages: [...contact.messages, message] };
+              }
+
+              return contact;
+            });
           });
           break;
-        }
 
         case MessageType.ADD_USER: {
           console.log('Adding a new user:', message);
