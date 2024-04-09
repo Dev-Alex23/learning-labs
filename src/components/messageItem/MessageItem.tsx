@@ -11,8 +11,9 @@ interface MessageProps {
 export const MessageItem: FC<MessageProps> = ({ content, timeStamp, sender }) => {
   const { currentUserId } = useChat();
 
-  const messageBG = currentUserId === sender ? 'bg-[#278EFF] self-end' : 'bg-[#2FCC59]';
-  const justify = currentUserId === sender ? 'self-end' : '';
+  // TODO: Check if it is possible to be able to not call to lower case
+  const messageBG = currentUserId?.toLowerCase() === sender.toLowerCase() ? 'bg-[#278EFF] self-end' : 'bg-[#2FCC59]';
+  const justify = currentUserId?.toLowerCase() === sender.toLowerCase() ? 'self-end' : '';
 
   return (
     <>

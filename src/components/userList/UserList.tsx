@@ -5,7 +5,6 @@ import { Typography } from '@material-tailwind/react';
 
 export const UserList = () => {
   const { contacts } = useChat();
-  console.log(contacts);
 
   if (contacts.length < 1) {
     return (

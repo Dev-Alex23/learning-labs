@@ -1,6 +1,6 @@
 import { ChatAvatar } from '@components/Common/avatar/Avatar';
 import { useChat } from '@hooks/useChat';
-import { Badge, Typography } from '@material-tailwind/react';
+import { Typography } from '@material-tailwind/react';
 import { FC } from 'react';
 
 interface UserChatItemProp {
@@ -19,9 +19,9 @@ export const UserChatItem: FC<UserChatItemProp> = ({ userImgUrl, username, lates
       className='flex gap-4 p-5 border-gray-200 border-b-2 items-center justify-center cursor-pointer'
       onClick={() => setSelectedContact(username)}
     >
-      <Badge color={'gray'} overlap='circular'>
-        <ChatAvatar src={userImgUrl} />
-      </Badge>
+      {/* <Badge color={'gray'} overlap='circular'> */}
+      <ChatAvatar src={userImgUrl} />
+      {/* </Badge> */}
       <div className='w-full flex flex-col gap-1'>
         <div className=' flex justify-between'>
           <Typography className='capitalize font-poppins font-medium'>{username}</Typography>
