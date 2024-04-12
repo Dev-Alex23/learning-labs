@@ -30,7 +30,7 @@ export const Search: FC<SearchProps> = ({ icon }) => {
         <IconButton
           className='p-2.5 ml-2 text-white bg-black rounded-lg'
           placeholder={'search'}
-          onClick={() => sendWebSocketMessage({ type: 'add_user', recipientId: userInput.toLowerCase() })}
+          onClick={() => sendWebSocketMessage(userInput)}
         >
           {icon}
           <span className='sr-only'>Search</span>

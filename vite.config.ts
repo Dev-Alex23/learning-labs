@@ -21,6 +21,7 @@ export default defineConfig({
       '@hooks': '/src/hooks',
       '@routes': '/src/routes',
       '@layout': '/src/layout',
+      '@state': '/src/state',
     },
   },
 });

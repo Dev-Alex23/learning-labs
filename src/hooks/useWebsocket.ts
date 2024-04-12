@@ -5,10 +5,10 @@ interface UseChatWebSocketProps {
   onMessage: (event: MessageEvent) => void;
   // onError: (event: ErrorEvent) => void;
   onClose: () => void;
-  userId: string | undefined;
+  currentUser: string | null | undefined;
 }
 
-const useChatWebSocket = ({ onMessage, onClose, userId }: UseChatWebSocketProps) => {
+const useChatWebSocket = ({ onMessage, onClose, currentUser }: UseChatWebSocketProps) => {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const useChatWebSocket = ({ onMessage, onClose, userId }: UseChatWebSocketProps)
     const handleOpen = () => {
       const registerMessage = {
         type: MessageType.REGISTER,
-        userId,
+        currentUser,
       };
       if (wsRef.current?.readyState === WebSocket.OPEN) {
         wsRef.current.send(JSON.stringify(registerMessage));
@@ -30,7 +30,7 @@ const useChatWebSocket = ({ onMessage, onClose, userId }: UseChatWebSocketProps)
     websocket.onclose = onClose;
 
     return () => websocket.close();
-  }, [onMessage, onClose, userId]);
+  }, [onMessage, onClose, currentUser]);
 
   const send = (message: unknown) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {

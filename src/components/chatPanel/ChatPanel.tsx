@@ -16,7 +16,7 @@ export const ChatPanel = () => {
   }
 
   return (
-    <section className='grid grid-rows-[90px_1fr_90px] gap-5 h-screen'>
+    <section className='grid grid-rows-[90px_1fr_90px] gap-5'>
       <ChatHeader status='online' />
       <ChatHistory />
       <ChatComposer />

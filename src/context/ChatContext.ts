@@ -1,10 +1,11 @@
 import { createContext } from 'react';
-import { ContactsProps } from './ChatProvider';
+import { State } from './ChatTypes';
 
 interface ChatContextProps {
-  contacts: ContactsProps[];
-  currentUserId: string | undefined;
-  sendWebSocketMessage: (message: unknown) => void; // Function to send message
+  state: State;
+  currentUser: string | null | undefined;
+
+  sendWebSocketMessage: (message: string) => void;
   selectedContact: string | null;
   setSelectedContact: (id: string | null) => void;
   sendMessage: (recipientId: string, content: string) => void;

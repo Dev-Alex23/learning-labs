@@ -1,8 +1,4 @@
-export enum MessageType {
-  REGISTER = 'register',
-  PRIVATE_MESSAGE = 'private_message',
-  ADD_USER = 'add_user',
-}
+import { ReactNode } from 'react';
 
 export interface ContactMessage {
   type: MessageType;
@@ -12,7 +8,38 @@ export interface ContactMessage {
   timeStamp?: string;
 }
 
-export interface ContactsProps {
-  contactId: string;
-  messages: ContactMessage[];
+export interface ChatProviderProps {
+  children: ReactNode;
+  currentUser: string;
 }
+
+export enum MessageType {
+  REGISTER = 'register',
+  PRIVATE_MESSAGE = 'private_message',
+  ADD_USER = 'add_user',
+}
+
+export interface Contact {
+  fullName: string;
+}
+export interface Message {
+  messageId: string;
+  messageFrom?: string;
+  messageTo: string;
+  content?: string;
+  timestamp: string;
+}
+
+export interface Blah {
+  type: MessageType;
+  message: Message;
+}
+
+export interface State {
+  contacts: Map<string, Contact>;
+  messages: Map<string, Message[]>;
+}
+
+export type StateAction =
+  | { type: 'ADD_CONTACT'; payload: string }
+  | { type: 'ADD_MESSAGE'; payload: { message: Message; currentUser: string | null | undefined } };

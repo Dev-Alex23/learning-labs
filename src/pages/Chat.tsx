@@ -5,10 +5,13 @@ import { ChatProvider } from '@context/ChatProvider';
 
 const Chat = () => {
   const { user } = useUser();
-  console.log(user?.id);
+  const firstName = user?.firstName;
+  const lastName = user?.lastName;
+  const fullName = `${firstName} ${lastName}`;
+
   return (
     <div className='grid grid-cols-[420px_1fr] h-full gap-5'>
-      <ChatProvider currentUserId={user?.id}>
+      <ChatProvider currentUser={fullName}>
         <UserManagementPanel />
         <ChatPanel />
       </ChatProvider>

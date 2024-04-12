@@ -13,7 +13,7 @@ export const RootLayout = () => {
   const navigate = useNavigate();
   return (
     <ClerkProvider navigate={navigate} publishableKey={PUBLISHABLE_KEY}>
-      <main className='w-screen h-screen bg-gray-100'>
+      <main className='w-screen h-screen bg-gray-100 p-6'>
         <Outlet />
       </main>
     </ClerkProvider>

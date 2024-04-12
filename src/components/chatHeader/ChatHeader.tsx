@@ -9,15 +9,14 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader: FC<ChatHeaderProps> = ({ userImgUrl, status }) => {
-  const { contacts, selectedContact } = useChat();
-  const currentChatDetails = contacts.find((contact) => contact.contactId === selectedContact);
+  const { selectedContact } = useChat();
   return (
     <section className='w-full h-[90px] rounded-lg bg-white'>
       <div className='flex gap-4 p-5 border-gray-200 items-center justify-center'>
         <ChatAvatar src={userImgUrl} />
         <div className='w-full flex flex-col gap-1'>
           <div className=' flex flex-col justify-between'>
-            <Typography className='capitalize font-poppins font-medium'>{currentChatDetails?.contactId}</Typography>
+            <Typography className='capitalize font-poppins font-medium'>{selectedContact}</Typography>
             <Typography className='capitalize text-gray-500  font-normal text-sm'>{status}</Typography>
           </div>
         </div>

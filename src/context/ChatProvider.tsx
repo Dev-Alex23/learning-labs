@@ -1,99 +1,45 @@
 import useChatWebSocket from '@hooks/useWebsocket';
-import { FC, ReactNode, useCallback, useReducer, useState } from 'react';
+import { chatStateReducer } from '@state/chatStateReducer';
+import { getCurrentFormattedTime } from '@utils/getCurrentFormattedTime';
+import { FC, useCallback, useReducer, useState } from 'react';
 import { ChatContext } from './ChatContext';
+import { Blah, ChatProviderProps, Message, MessageType, State } from './ChatTypes';
 
-interface ChatProviderProps {
-  children: ReactNode;
-  currentUserId: string | undefined;
-}
-
-enum MessageType {
-  REGISTER = 'register',
-  PRIVATE_MESSAGE = 'private_message',
-  ADD_USER = 'add_user',
-}
-
-interface ContactMessage {
-  type: MessageType;
-  senderId: string;
-  recipientId: string;
-  userId?: string;
-  content: string;
-  timeStamp: string;
-}
-
-export interface ContactsProps {
-  contactId: string;
-  messages: ContactMessage[];
-}
-
-type Action =
-  | { type: 'ADD_OR_UPDATE_CONTACT'; payload: ContactMessage }
-  | { type: 'ADD_USER'; payload: ContactMessage };
-
-const chatStateReducer = (state: ContactsProps[], { type, payload }: Action) => {
-  switch (type) {
-    case 'ADD_OR_UPDATE_CONTACT': {
-      const { senderId, recipientId } = payload;
-      console.log({ payload });
-
-      // check if this user in contacts
-      const isContact = state.some((contact) => contact.contactId === (recipientId || senderId));
-      console.log({ isContact });
-
-      if (!isContact) {
-        console.log({ contactId: senderId, messages: [payload] });
-
-        return [...state, { contactId: senderId, messages: [payload] }];
-      }
-
-      return state.map((contact) => {
-        if (contact.contactId === senderId || contact.contactId === recipientId) {
-          console.log({ ...contact, messages: [...contact.messages, payload] });
-
-          return { ...contact, messages: [...contact.messages, payload] };
-        }
-        return contact;
-      });
-    }
-    case 'ADD_USER': {
-      console.log(state[1]?.contactId);
-
-      const isContact = state.some((contact) => contact.contactId === (payload.recipientId || payload.userId));
-
-      if (isContact) return state;
-      console.log(isContact);
-
-      return [...state, { contactId: payload.recipientId, messages: [] }];
-    }
-    default:
-      return state;
-  }
-};
-
-export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUserId }) => {
-  const [contacts, dispatch] = useReducer(chatStateReducer, []);
+export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) => {
+  const initialState: State = {
+    contacts: new Map(),
+    messages: new Map(),
+  };
+  const [state, dispatch] = useReducer(chatStateReducer, initialState);
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
 
-  const handleMessage = useCallback((event: MessageEvent) => {
-    const message: ContactMessage = JSON.parse(event.data);
+  const handleMessage = useCallback(
+    (event: MessageEvent) => {
+      const { message, type } = JSON.parse(event.data);
 
-    switch (message.type) {
-      case MessageType.PRIVATE_MESSAGE:
-        dispatch({ type: 'ADD_OR_UPDATE_CONTACT', payload: message });
-        break;
+      switch (type) {
+        case MessageType.PRIVATE_MESSAGE: {
+          const newMessage = {
+            message,
+            currentUser: currentUser,
+          };
+          dispatch({ type: 'ADD_MESSAGE', payload: newMessage });
+          break;
+        }
+        case MessageType.ADD_USER: {
+          console.log({ message });
 
-      case MessageType.ADD_USER: {
-        console.log('Adding a new user:', message);
-        dispatch({ type: 'ADD_USER', payload: message });
-        break;
+          dispatch({ type: 'ADD_CONTACT', payload: message.currentUser });
+          break;
+        }
+
+        default:
+          console.log('Unhandled message type:', message);
+          break;
       }
-
-      default:
-        console.log('Unhandled message type:', message);
-        break;
-    }
-  }, []);
+    },
+    [currentUser]
+  );
 
   const handleClose = () => {
     console.error('WebSocket close');
@@ -102,36 +48,44 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUserId })
   const socket = {
     onMessage: handleMessage,
     onClose: handleClose,
-    userId: currentUserId?.toLowerCase(),
+    currentUser,
   };
 
   const { send } = useChatWebSocket(socket);
 
   const sendMessage = (recipientId: string, content: string) => {
-    if (!currentUserId) return; // Ensure currentUserId is defined
+    if (!currentUser) return;
 
-    console.log({ currentUserId, recipientId });
+    console.log(recipientId);
 
-    const newMessage: ContactMessage = {
+    const message: Message = {
+      messageId: '12873469182736498172364',
+      messageFrom: currentUser?.toLowerCase(),
+      messageTo: recipientId.toLowerCase(),
+      content,
+      timestamp: getCurrentFormattedTime(),
+    };
+
+    const newMessage: Blah = {
       type: MessageType.PRIVATE_MESSAGE,
-      senderId: currentUserId.toLowerCase(),
-      recipientId: recipientId.toLowerCase(),
-      content: content,
-      timeStamp: new Date().toISOString(),
+      message,
     };
 
     send(newMessage);
 
-    dispatch({ type: 'ADD_OR_UPDATE_CONTACT', payload: newMessage });
+    dispatch({ type: 'ADD_MESSAGE', payload: { message, currentUser: currentUser } });
   };
 
-  const sendWebSocketMessage = (message: unknown) => {
-    dispatch({ type: 'ADD_USER', payload: message as ContactMessage });
+  const sendWebSocketMessage = (message: string) => {
+    const newMessage = {
+      type: MessageType.ADD_USER,
+      message,
+    };
 
-    send(message);
+    send(newMessage);
   };
 
-  const value = { currentUserId, contacts, selectedContact, setSelectedContact, sendMessage, sendWebSocketMessage };
+  const value = { currentUser, state, selectedContact, setSelectedContact, sendMessage, sendWebSocketMessage };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };
