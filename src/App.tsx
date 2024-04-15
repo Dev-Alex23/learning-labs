@@ -1,5 +1,5 @@
 import { ErrorFallback } from '@components/Common/ErrorFallback';
-import { lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { RootLayout } from '@layout/Root/Root';
 import Login from '@pages/Login';
 import Register from '@pages/Register';
 import { DesktopLayout } from '@layout/Desktop/Desktop';
+import { Loader } from '@components/Common/Loader';
 
 const Chat = lazy(() => import('@pages/Chat'));
 
@@ -33,7 +34,11 @@ const router = createBrowserRouter([
         errorElement: <ErrorFallback />,
         children: [
           {
-            element: <Chat />,
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Chat />
+              </Suspense>
+            ),
             path: '/chat',
           },
         ],

@@ -1,9 +1,9 @@
 import { MessageType } from '@context/ChatTypes';
+import { showToast } from '@utils/ShowToast';
 import { useEffect, useRef } from 'react';
 
 interface UseChatWebSocketProps {
   onMessage: (event: MessageEvent) => void;
-  // onError: (event: ErrorEvent) => void;
   onClose: () => void;
   currentUser: string | null | undefined;
 }
@@ -26,17 +26,30 @@ const useChatWebSocket = ({ onMessage, onClose, currentUser }: UseChatWebSocketP
     };
     websocket.onopen = handleOpen;
     websocket.onmessage = onMessage;
-    // websocket.onerror = onError;
     websocket.onclose = onClose;
+    websocket.onerror = () => {
+      showToast('Could not connect to server', 'error');
+    };
 
     return () => websocket.close();
   }, [onMessage, onClose, currentUser]);
 
   const send = (message: unknown) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log({ message });
+    if (!wsRef.current) {
+      showToast('WebSocket is not initialized', 'error');
+      return;
+    }
 
-      wsRef.current.send(JSON.stringify(message));
+    if (wsRef.current.readyState !== WebSocket.OPEN) {
+      showToast('No WebSocket Connection', 'error');
+      return;
+    }
+
+    try {
+      const messageJson = JSON.stringify(message);
+      wsRef.current.send(messageJson);
+    } catch (error) {
+      showToast('Error sending message', 'error');
     }
   };
 

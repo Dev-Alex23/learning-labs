@@ -4,6 +4,8 @@ import { getCurrentFormattedTime } from '@utils/getCurrentFormattedTime';
 import { FC, useCallback, useReducer, useState } from 'react';
 import { ChatContext } from './ChatContext';
 import { Blah, ChatProviderProps, Message, MessageType, State } from './ChatTypes';
+import { showToast } from '@utils/ShowToast';
+import { v4 as uuidv4 } from 'uuid';
 
 export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) => {
   const initialState: State = {
@@ -27,8 +29,6 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
           break;
         }
         case MessageType.ADD_USER: {
-          console.log({ message });
-
           dispatch({ type: 'ADD_CONTACT', payload: message.currentUser });
           break;
         }
@@ -41,9 +41,9 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
     [currentUser]
   );
 
-  const handleClose = () => {
-    console.error('WebSocket close');
-  };
+  const handleClose = useCallback(() => {
+    showToast('WebSocket connection closed', 'info');
+  }, []);
 
   const socket = {
     onMessage: handleMessage,
@@ -53,37 +53,41 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
 
   const { send } = useChatWebSocket(socket);
 
-  const sendMessage = (recipientId: string, content: string) => {
-    if (!currentUser) return;
+  const sendMessage = useCallback(
+    (recipientId: string, content: string) => {
+      if (!currentUser) return;
 
-    console.log(recipientId);
+      const message: Message = {
+        messageId: uuidv4(),
+        messageFrom: currentUser?.toLowerCase(),
+        messageTo: recipientId.toLowerCase(),
+        content,
+        timestamp: getCurrentFormattedTime(),
+      };
 
-    const message: Message = {
-      messageId: '12873469182736498172364',
-      messageFrom: currentUser?.toLowerCase(),
-      messageTo: recipientId.toLowerCase(),
-      content,
-      timestamp: getCurrentFormattedTime(),
-    };
+      const newMessage: Blah = {
+        type: MessageType.PRIVATE_MESSAGE,
+        message,
+      };
 
-    const newMessage: Blah = {
-      type: MessageType.PRIVATE_MESSAGE,
-      message,
-    };
+      send(newMessage);
 
-    send(newMessage);
+      dispatch({ type: 'ADD_MESSAGE', payload: { message, currentUser } });
+    },
+    [currentUser, send]
+  );
 
-    dispatch({ type: 'ADD_MESSAGE', payload: { message, currentUser: currentUser } });
-  };
+  const sendWebSocketMessage = useCallback(
+    (message: string) => {
+      const newMessage = {
+        type: MessageType.ADD_USER,
+        message,
+      };
 
-  const sendWebSocketMessage = (message: string) => {
-    const newMessage = {
-      type: MessageType.ADD_USER,
-      message,
-    };
-
-    send(newMessage);
-  };
+      send(newMessage);
+    },
+    [send]
+  );
 
   const value = { currentUser, state, selectedContact, setSelectedContact, sendMessage, sendWebSocketMessage };
 

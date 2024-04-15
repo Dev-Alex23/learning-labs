@@ -10,7 +10,7 @@ export const ChatPanel = () => {
   if (selectedContact === null) {
     return (
       <section className='flex flex-col justify-center items-center gap-5 bg-white rounded-lg'>
-        <Typography>Please select a contact to view chat history</Typography>
+        <Typography className='font-poppins font-normal'>Please select a contact to view chat history</Typography>
       </section>
     );
   }

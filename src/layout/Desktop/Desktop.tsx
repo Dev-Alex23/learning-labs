@@ -6,8 +6,7 @@ export const DesktopLayout = () => {
   const { isSignedIn } = useUser();
   const navigate = useNavigate();
 
-  console.log('test', { isSignedIn });
-
+  // TODO: FIX THE ISSUES RELATED TO AUTH
   useEffect(() => {
     if (!isSignedIn) {
       navigate('/sign-in', { replace: true });
