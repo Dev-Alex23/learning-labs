@@ -3,7 +3,7 @@ import { chatStateReducer } from '@state/chatStateReducer';
 import { getCurrentFormattedTime } from '@utils/getCurrentFormattedTime';
 import { FC, useCallback, useReducer, useState } from 'react';
 import { ChatContext } from './ChatContext';
-import { Blah, ChatProviderProps, Message, MessageType, State } from './ChatTypes';
+import { MessageEventType, ChatProviderProps, Message, MessageType, State } from './ChatTypes';
 import { showToast } from '@utils/ShowToast';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -65,7 +65,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
         timestamp: getCurrentFormattedTime(),
       };
 
-      const newMessage: Blah = {
+      const newMessage: MessageEventType = {
         type: MessageType.PRIVATE_MESSAGE,
         message,
       };
@@ -89,7 +89,15 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
     [send]
   );
 
-  const value = { currentUser, state, selectedContact, setSelectedContact, sendMessage, sendWebSocketMessage };
+  const value = {
+    currentUser,
+    state,
+    dispatch,
+    selectedContact,
+    setSelectedContact,
+    sendMessage,
+    sendWebSocketMessage,
+  };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

@@ -30,7 +30,7 @@ export interface Message {
   timestamp: string;
 }
 
-export interface Blah {
+export interface MessageEventType {
   type: MessageType;
   message: Message;
 }
@@ -42,4 +42,5 @@ export interface State {
 
 export type StateAction =
   | { type: 'ADD_CONTACT'; payload: string }
-  | { type: 'ADD_MESSAGE'; payload: { message: Message; currentUser: string | null | undefined } };
+  | { type: 'ADD_MESSAGE'; payload: { message: Message; currentUser: string | null | undefined } }
+  | { type: 'REMOVE_CONTACT'; payload: string };
