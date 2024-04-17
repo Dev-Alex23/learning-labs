@@ -2,10 +2,9 @@ import useChatWebSocket from '@hooks/useWebsocket';
 import { chatStateReducer } from '@state/chatStateReducer';
 import { getCurrentFormattedTime } from '@utils/getCurrentFormattedTime';
 import { FC, useCallback, useReducer, useState } from 'react';
-import { ChatContext } from './ChatContext';
-import { MessageEventType, ChatProviderProps, Message, MessageType, State } from './ChatTypes';
-import { showToast } from '@utils/ShowToast';
 import { v4 as uuidv4 } from 'uuid';
+import { ChatContext } from './ChatContext';
+import { ChatProviderProps, Message, MessageEventType, MessageType, State } from './ChatTypes';
 
 export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) => {
   const initialState: State = {
@@ -16,6 +15,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
 
   const handleMessage = useCallback(
+    // TODO: LOOK UP HOW TO PROPERLY TYPE EVENT
     (event: MessageEvent) => {
       const { message, type } = JSON.parse(event.data);
 
@@ -23,7 +23,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
         case MessageType.PRIVATE_MESSAGE: {
           const newMessage = {
             message,
-            currentUser: currentUser,
+            currentUser,
           };
           dispatch({ type: 'ADD_MESSAGE', payload: newMessage });
           break;
@@ -41,17 +41,10 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
     [currentUser]
   );
 
-  const handleClose = useCallback(() => {
-    showToast('WebSocket connection closed', 'info');
-  }, []);
-
-  const socket = {
-    onMessage: handleMessage,
-    onClose: handleClose,
+  const { send } = useChatWebSocket({
+    handleMessage,
     currentUser,
-  };
-
-  const { send } = useChatWebSocket(socket);
+  });
 
   const sendMessage = useCallback(
     (recipientId: string, content: string) => {
