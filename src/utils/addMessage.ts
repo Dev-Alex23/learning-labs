@@ -7,27 +7,20 @@ export const addMessage = (
 ): State => {
   // TODO: HOW SHOULD MAPS BE USED IN TERMS OF IMMUTABILITY?
   const { message, currentUser } = payload;
-  try {
-    if (!message || !message.messageFrom || !message.messageTo || !currentUser) {
-      return state;
-    }
-    const contactId = message.messageFrom.toLowerCase();
-    const currentLoggedInUser = currentUser?.toLowerCase();
-    let contacts = state.contacts;
-
-    if (contactId !== currentLoggedInUser && !state.contacts.has(contactId)) {
-      contacts = addContactIfNotExist(state, contactId);
-    }
-
-    const sender =
-      currentLoggedInUser === contactId ? message.messageTo.toLowerCase() : message.messageFrom.toLowerCase();
-    const currentMessages = state.messages.get(sender) ?? [];
-    const newMessages = new Map(state.messages);
-    newMessages.set(sender, [...currentMessages, message]);
-
-    return { ...state, messages: newMessages, contacts };
-  } catch (e) {
-    console.error(e);
+  if (!message?.messageFrom || !message?.messageTo || !currentUser) {
     return state;
   }
+  const contactId = message.messageFrom.toLowerCase();
+  const currentLoggedInUser = currentUser?.toLowerCase();
+
+  const contacts =
+    contactId !== currentLoggedInUser && !state.contacts.has(contactId)
+      ? addContactIfNotExist(state, contactId)
+      : state.contacts;
+
+  const messageKey = currentLoggedInUser === contactId ? message.messageTo.toLowerCase() : contactId;
+  const currentMessages = state.messages.get(messageKey) ?? [];
+  const newMessages = new Map(state.messages).set(messageKey, [...currentMessages, message]);
+
+  return { ...state, messages: newMessages, contacts };
 };

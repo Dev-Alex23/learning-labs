@@ -1,11 +1,10 @@
-import { State } from '@context/ChatTypes';
+import { Contact, State } from '@context/ChatTypes';
 
-export const addContactIfNotExist = (state: State, contactId: string) => {
-  if (!state.contacts.get(contactId.toLowerCase())) {
-    const newContacts = new Map(state.contacts);
-    console.log({ newContacts });
-
-    newContacts.set(contactId.toLowerCase(), { fullName: contactId });
+export const addContactIfNotExist = (state: State, contactId: string): Map<string, Contact> => {
+  const lowerCaseContactId = contactId.toLowerCase();
+  if (!state.contacts.get(lowerCaseContactId)) {
+    const newContacts = new Map<string, Contact>(state.contacts);
+    newContacts.set(lowerCaseContactId, { fullName: contactId });
     return newContacts;
   }
 

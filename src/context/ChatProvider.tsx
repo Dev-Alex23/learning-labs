@@ -28,6 +28,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children, currentUser }) =
           dispatch({ type: 'ADD_MESSAGE', payload: newMessage });
           break;
         }
+        // TODO: KEEP NAMING CONSISTENT
         case MessageType.ADD_USER: {
           dispatch({ type: 'ADD_CONTACT', payload: message.currentUser });
           break;
