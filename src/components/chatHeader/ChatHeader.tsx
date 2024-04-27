@@ -5,16 +5,15 @@ import { Menu, MenuHandler, MenuItem, MenuList, Typography } from '@material-tai
 import { FC } from 'react';
 
 interface ChatHeaderProps {
-  userImgUrl?: string;
   status: 'offline' | 'online';
 }
 
-export const ChatHeader: FC<ChatHeaderProps> = ({ userImgUrl, status }) => {
+export const ChatHeader: FC<ChatHeaderProps> = ({ status }) => {
   const { selectedContact, dispatch, setSelectedContact } = useChat();
   return (
     <section className='w-full h-[90px] rounded-lg bg-white'>
       <div className='flex gap-4 p-5 border-gray-200 items-center justify-center'>
-        <ChatAvatar src={userImgUrl} />
+        <ChatAvatar username={selectedContact} />
         <div className='w-full flex items-center justify-between gap-1'>
           <div className=' flex flex-col justify-between'>
             <Typography className='capitalize font-poppins font-medium'>{selectedContact}</Typography>

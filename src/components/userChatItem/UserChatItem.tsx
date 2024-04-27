@@ -4,14 +4,13 @@ import { Typography } from '@material-tailwind/react';
 import { FC } from 'react';
 
 interface UserChatItemProp {
-  userImgUrl?: string;
   username: string;
   latestMessage: string;
   timeStamp: string;
   onlineStatus?: 'green';
 }
 
-export const UserChatItem: FC<UserChatItemProp> = ({ userImgUrl, username, latestMessage, timeStamp }) => {
+export const UserChatItem: FC<UserChatItemProp> = ({ username, latestMessage, timeStamp }) => {
   const { setSelectedContact } = useChat();
 
   return (
@@ -20,7 +19,7 @@ export const UserChatItem: FC<UserChatItemProp> = ({ userImgUrl, username, lates
       onClick={() => setSelectedContact(username)}
     >
       {/* <Badge color={'gray'} overlap='circular'> */}
-      <ChatAvatar src={userImgUrl} />
+      <ChatAvatar username={username} />
       {/* </Badge> */}
       <div className='w-full flex flex-col gap-1'>
         <div className=' flex justify-between'>
