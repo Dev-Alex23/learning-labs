@@ -1,3 +1,4 @@
+import { useUser } from '@clerk/clerk-react';
 import { MessageType } from '@context/ChatTypes';
 import { showToast } from '@utils/ShowToast';
 import { useCallback, useEffect, useRef } from 'react';
@@ -8,8 +9,9 @@ interface UseChatWebSocketProps {
 }
 
 const useChatWebSocket = ({ handleMessage, currentUser }: UseChatWebSocketProps) => {
+  const { isSignedIn } = useUser();
   const wsRef = useRef<WebSocket | null>(null);
-  const timeoutRef = useRef<number>(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const attemptsRef = useRef<number>(0);
   const MAX_ATTEMPTS = 5;
   const RECONNECT_INTERVAL_BASE = 3000;
@@ -50,7 +52,9 @@ const useChatWebSocket = ({ handleMessage, currentUser }: UseChatWebSocketProps)
   }, [currentUser, handleMessage]);
 
   useEffect(() => {
-    connectWebsocket();
+    if (isSignedIn) {
+      connectWebsocket();
+    }
 
     return () => {
       wsRef.current?.close();
@@ -58,7 +62,7 @@ const useChatWebSocket = ({ handleMessage, currentUser }: UseChatWebSocketProps)
       clearTimeout(timeoutRef.current);
       attemptsRef.current = 0;
     };
-  }, [connectWebsocket]);
+  }, [connectWebsocket, currentUser, isSignedIn]);
 
   const send = (message: unknown) => {
     if (!wsRef.current) {
