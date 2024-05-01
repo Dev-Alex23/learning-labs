@@ -1,26 +1,32 @@
 import { useChat } from '@hooks/useChat';
 import { Typography } from '@material-tailwind/react';
-import { FC } from 'react';
+import { forwardRef, useMemo } from 'react';
 
-interface MessageProps {
+export interface MessageProps {
   content: string;
   timeStamp?: string;
   sender: string;
 }
 
-export const MessageItem: FC<MessageProps> = ({ content, timeStamp, sender }) => {
+export const MessageItem = forwardRef<HTMLDivElement | null, MessageProps>(({ content, timeStamp, sender }, ref) => {
   const { currentUser } = useChat();
 
-  // TODO: Check if it is possible to be able to not call to lower case
-  const messageBG = currentUser?.toLowerCase() === sender.toLowerCase() ? 'bg-[#278EFF] self-end' : 'bg-[#2FCC59]';
-  const justify = currentUser?.toLowerCase() === sender.toLowerCase() ? 'self-end' : '';
+  // Pre-compute and memoize comparisons to avoid repeated lowercasing in the render
+  const isCurrentUser = useMemo(() => currentUser?.toLowerCase() === sender.toLowerCase(), [currentUser, sender]);
+
+  const messageStyles = {
+    backgroundClass: isCurrentUser ? 'bg-[#278EFF] self-end' : 'bg-[#2FCC59]',
+    textAlignmentClass: isCurrentUser ? 'self-end' : '',
+  };
 
   return (
     <>
-      <Typography className={`text-gray-500 font-poppins font-normal text-sm ${justify}`}>{timeStamp}</Typography>
-      <div className={`max-w-fit flex ${messageBG} p-3 rounded-xl`}>
+      <Typography className={`text-gray-500 font-poppins font-normal text-sm ${messageStyles.textAlignmentClass}`}>
+        {timeStamp}
+      </Typography>
+      <div className={`max-w-fit flex ${messageStyles.backgroundClass} p-3 rounded-xl`} ref={ref}>
         <Typography className='text-white font-poppins max-w-xl break-words'>{content}</Typography>
       </div>
     </>
   );
-};
+});
