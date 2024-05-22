@@ -1,17 +1,14 @@
-import { useUser } from '@clerk/clerk-react';
-import { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { SignedIn } from '@clerk/clerk-react';
+import { UserManagementPanel } from '@components/userManagermentPanel/UserManagementPanel';
+import { Outlet } from 'react-router-dom';
 
 export const DesktopLayout = () => {
-  const { isSignedIn } = useUser();
-  const navigate = useNavigate();
-
-  // TODO: FIX THE ISSUES RELATED TO AUTH
-  useEffect(() => {
-    if (!isSignedIn) {
-      navigate('/sign-in', { replace: true });
-    }
-  }, [navigate, isSignedIn]);
-
-  return <Outlet />;
+  return (
+    <div className='grid grid-cols-[420px_1fr] h-full gap-5'>
+      <SignedIn>
+        <UserManagementPanel />
+        <Outlet />
+      </SignedIn>
+    </div>
+  );
 };

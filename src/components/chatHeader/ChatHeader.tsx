@@ -3,6 +3,7 @@ import { MessageIcon } from '@components/Common/icons/MessageIcon';
 import { useChat } from '@hooks/useChat';
 import { Menu, MenuHandler, MenuItem, MenuList, Typography } from '@material-tailwind/react';
 import { FC } from 'react';
+import { Link } from 'react-router-dom';
 
 interface ChatHeaderProps {
   status: 'offline' | 'online';
@@ -10,6 +11,7 @@ interface ChatHeaderProps {
 
 export const ChatHeader: FC<ChatHeaderProps> = ({ status }) => {
   const { selectedContact, dispatch, setSelectedContact } = useChat();
+  // const navigate = useNavigate();
   return (
     <section className='w-full h-[90px] rounded-lg bg-white'>
       <div className='flex gap-4 p-5 border-gray-200 items-center justify-center'>
@@ -42,15 +44,18 @@ export const ChatHeader: FC<ChatHeaderProps> = ({ status }) => {
               <MenuList>
                 <MenuItem
                   className='flex items-center gap-2'
-                  onClick={() => {
-                    dispatch({ type: 'REMOVE_CONTACT', payload: selectedContact! });
-                    setSelectedContact(null);
-                  }}
+                  // onClick={() => {
+                  //   dispatch({ type: 'REMOVE_CONTACT', payload: selectedContact! });
+                  //   setSelectedContact(null);
+                  //   // navigate(`destroy`);
+                  // }}
                 >
-                  <MessageIcon />
-                  <Typography variant='small' className='font-poppins font-medium'>
-                    Delete Contact
-                  </Typography>
+                  <Link to={'destroy'}>
+                    <MessageIcon />
+                    <button className='font-poppins font-medium' type='submit'>
+                      Delete Contact
+                    </button>
+                  </Link>
                 </MenuItem>
               </MenuList>
             </Menu>
